@@ -29,9 +29,6 @@ namespace WindowsFormsApplication2
       regKeyNameRegex = new Regex(@"^([^@]+)@(\d+):(.*)$");
       hexStringRegex = new Regex(@"^0x([0-9a-f]+)$");
       this.rescan();
-      // courtesy https://msdn.microsoft.com/en-us/library/ms996467.aspx
-      // dunno why i can't hook it up using designer...
-      // this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_columnClick);
     }
 
     private void rescanRegistryToolStripMenuItem_Click(object sender, EventArgs e)
