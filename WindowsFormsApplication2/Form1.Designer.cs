@@ -111,13 +111,13 @@
       // toFileToolStripMenuItem
       // 
       this.toFileToolStripMenuItem.Name = "toFileToolStripMenuItem";
-      this.toFileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+      this.toFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.toFileToolStripMenuItem.Text = "To &File";
       // 
       // toClipboardToolStripMenuItem
       // 
       this.toClipboardToolStripMenuItem.Name = "toClipboardToolStripMenuItem";
-      this.toClipboardToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+      this.toClipboardToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.toClipboardToolStripMenuItem.Text = "To &Clipboard";
       // 
       // exitToolStripMenuItem
@@ -169,6 +169,7 @@
       this.listView1.UseCompatibleStateImageBehavior = false;
       this.listView1.View = System.Windows.Forms.View.Details;
       this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick_1);
+      this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyDown);
       // 
       // hostColumnHeader
       // 

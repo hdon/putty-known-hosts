@@ -20,8 +20,10 @@ namespace WindowsFormsApplication2
     KnownHost[] knownHosts;
 
     /* TODO static? */
-    Regex regKeyNameRegex;
-    Regex hexStringRegex;
+    readonly Regex regKeyNameRegex;
+    readonly Regex hexStringRegex;
+
+    const string REG_KEY = "Software\\SimonTatham\\PuTTY\\SshHostKeys";
 
     public Form1()
     {
@@ -39,8 +41,9 @@ namespace WindowsFormsApplication2
     private void rescan()
     {
       this.knownHosts = null;
+      listView1.Items.Clear();
       System.Console.Write("Hello, World!\n");
-      RegistryKey rkeySshHostKeys = Registry.CurrentUser.OpenSubKey("Software\\SimonTatham\\PuTTY\\SshHostKeys");
+      RegistryKey rkeySshHostKeys = Registry.CurrentUser.OpenSubKey(REG_KEY);
       if (rkeySshHostKeys == null)
       {
         MessageBox.Show("Could not locate registry key HKEY_CURRENT_USER\\Software\\SimonTatham\\PuTTY\\SshHostKeys. Are you sure you have installed PuTTY?");
@@ -106,6 +109,7 @@ namespace WindowsFormsApplication2
         var li = new ListViewItem(parts[0]);
         li.SubItems.Add(parts[1]);
         li.SubItems.Add(parts[2]);
+        li.Tag = subkey;
         listView1.Items.Add(li);
       }
     }
@@ -192,6 +196,40 @@ namespace WindowsFormsApplication2
       this.listView1.ListViewItemSorter = new ListViewItemComparer(e.Column);
       this.listView1.Sort();
     }
+
+    private void listView1_KeyDown(object sender, KeyEventArgs ev)
+    {
+      if (Keys.Delete == ev.KeyCode)
+      {
+        try
+        {
+          deletedSelectedItems();
+        }
+        catch (Exception err)
+        {
+          MessageBox.Show(err.Message);
+          rescan();
+        }
+      }
+    }
+
+    private void deletedSelectedItems()
+    {
+      var items = listView1.SelectedItems;
+      foreach (ListViewItem item in items)
+      {
+        var key = Registry.CurrentUser.OpenSubKey(REG_KEY, true);
+        if (key == null)
+        {
+          throw new Exception("Error: Can't find Putty's known hosts in Windows Registry");
+        }
+        else
+        {
+          key.DeleteValue((string)item.Tag);
+          listView1.Items.Remove(item);
+        }
+      }
+    }
   }
 
   // https://msdn.microsoft.com/en-us/library/ms996467.aspx
@@ -217,6 +255,7 @@ namespace WindowsFormsApplication2
 
   class KnownHost
   {
+    String regKey;
     String host;
     String key;
     public KnownHost(String host, String key)
