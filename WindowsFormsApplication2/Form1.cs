@@ -94,16 +94,9 @@ namespace WindowsFormsApplication2
       var items = listView1.SelectedItems;
       foreach (ListViewItem item in items)
       {
-        var key = Registry.CurrentUser.OpenSubKey(REG_KEY, true);
-        if (key == null)
-        {
-          throw new Exception("Error: Can't find Putty's known hosts in Windows Registry");
-        }
-        else
-        {
-          key.DeleteValue((string)item.Tag);
-          listView1.Items.Remove(item);
-        }
+        var knownHost = (KnownHost) item.Tag;
+        knownHost.deleteFromRegistry();
+        listView1.Items.Remove(knownHost.listViewItem);
       }
     }
 
@@ -163,7 +156,7 @@ namespace WindowsFormsApplication2
     {
       regKeyNameRegex = new Regex(@"^([^@]+)@(\d+):(.*)$");
       hexStringRegex = new Regex(@"^0x([0-9a-f]+)$");
-      rkeySshHostKeys = Registry.CurrentUser.OpenSubKey(REG_KEY);
+      rkeySshHostKeys = Registry.CurrentUser.OpenSubKey(REG_KEY, true);
     }
 
     /* TODO Is this pattern a good idea? Lazily-evaluated properties that instantiate and assign the first time you access them? */
@@ -232,6 +225,12 @@ namespace WindowsFormsApplication2
       rval.windowsRegistryValue = keyData;
       return rval;
     }
+
+    public void deleteFromRegistry()
+    {
+      rkeySshHostKeys.DeleteValue(windowsRegistryName);
+    }
+
     Tuple<byte[], byte[]> DecodePuttyRegPubKey(string pubkey)
     {
       var regKeyParts = pubkey.Split(',');
