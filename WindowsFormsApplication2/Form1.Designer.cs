@@ -31,12 +31,6 @@
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.rescanRegistryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.fromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.fromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.onlineDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +40,8 @@
       this.hostColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.hostKeyTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.hostKeyFingerprintHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.exportToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.exportToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -64,8 +60,8 @@
       // 
       this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rescanRegistryToolStripMenuItem,
-            this.importToolStripMenuItem,
-            this.exportToolStripMenuItem,
+            this.exportToFileToolStripMenuItem,
+            this.exportToClipboardToolStripMenuItem,
             this.exitToolStripMenuItem});
       this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
       this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -74,57 +70,16 @@
       // rescanRegistryToolStripMenuItem
       // 
       this.rescanRegistryToolStripMenuItem.Name = "rescanRegistryToolStripMenuItem";
-      this.rescanRegistryToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.rescanRegistryToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
       this.rescanRegistryToolStripMenuItem.Text = "&Re-scan Registry";
       this.rescanRegistryToolStripMenuItem.Click += new System.EventHandler(this.rescanRegistryToolStripMenuItem_Click);
-      // 
-      // importToolStripMenuItem
-      // 
-      this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fromFileToolStripMenuItem,
-            this.fromClipboardToolStripMenuItem});
-      this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-      this.importToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-      this.importToolStripMenuItem.Text = "&Import";
-      // 
-      // fromFileToolStripMenuItem
-      // 
-      this.fromFileToolStripMenuItem.Name = "fromFileToolStripMenuItem";
-      this.fromFileToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-      this.fromFileToolStripMenuItem.Text = "From &File";
-      // 
-      // fromClipboardToolStripMenuItem
-      // 
-      this.fromClipboardToolStripMenuItem.Name = "fromClipboardToolStripMenuItem";
-      this.fromClipboardToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-      this.fromClipboardToolStripMenuItem.Text = "From &Clipboard";
-      // 
-      // exportToolStripMenuItem
-      // 
-      this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toFileToolStripMenuItem,
-            this.toClipboardToolStripMenuItem});
-      this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-      this.exportToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-      this.exportToolStripMenuItem.Text = "&Export";
-      // 
-      // toFileToolStripMenuItem
-      // 
-      this.toFileToolStripMenuItem.Name = "toFileToolStripMenuItem";
-      this.toFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.toFileToolStripMenuItem.Text = "To &File";
-      // 
-      // toClipboardToolStripMenuItem
-      // 
-      this.toClipboardToolStripMenuItem.Name = "toClipboardToolStripMenuItem";
-      this.toClipboardToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.toClipboardToolStripMenuItem.Text = "To &Clipboard";
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
       this.exitToolStripMenuItem.Text = "E&xit";
+      this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
       // 
       // helpToolStripMenuItem
       // 
@@ -186,6 +141,19 @@
       this.hostKeyFingerprintHeader.Text = "Key Fingerprint";
       this.hostKeyFingerprintHeader.Width = 648;
       // 
+      // exportToFileToolStripMenuItem
+      // 
+      this.exportToFileToolStripMenuItem.Name = "exportToFileToolStripMenuItem";
+      this.exportToFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+      this.exportToFileToolStripMenuItem.Text = "E&xport to File";
+      // 
+      // exportToClipboardToolStripMenuItem
+      // 
+      this.exportToClipboardToolStripMenuItem.Name = "exportToClipboardToolStripMenuItem";
+      this.exportToClipboardToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+      this.exportToClipboardToolStripMenuItem.Text = "Export to &Clipboard";
+      this.exportToClipboardToolStripMenuItem.Click += new System.EventHandler(this.exportToClipboardToolStripMenuItem_Click);
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -208,12 +176,6 @@
     private System.Windows.Forms.MenuStrip menuStrip1;
     private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem rescanRegistryToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem fromFileToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem fromClipboardToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem toFileToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem toClipboardToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem onlineDocumentationToolStripMenuItem;
@@ -223,6 +185,8 @@
     private System.Windows.Forms.ColumnHeader hostColumnHeader;
     private System.Windows.Forms.ColumnHeader hostKeyTypeHeader;
     private System.Windows.Forms.ColumnHeader hostKeyFingerprintHeader;
+    private System.Windows.Forms.ToolStripMenuItem exportToFileToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem exportToClipboardToolStripMenuItem;
   }
 }
 
