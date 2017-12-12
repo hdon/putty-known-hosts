@@ -127,7 +127,8 @@ namespace WindowsFormsApplication2
 
     private void exportToFileToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      
+      if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+        File.WriteAllText(saveFileDialog1.FileName, exportToString());
     }
   }
 

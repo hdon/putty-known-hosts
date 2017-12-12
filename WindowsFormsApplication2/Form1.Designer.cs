@@ -42,6 +42,7 @@
       this.hostColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.hostKeyTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.hostKeyFingerprintHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -155,6 +156,10 @@
       this.hostKeyFingerprintHeader.Text = "Key Fingerprint";
       this.hostKeyFingerprintHeader.Width = 648;
       // 
+      // saveFileDialog1
+      // 
+      this.saveFileDialog1.Filter = "Windows Registry Files|*.reg|Text files|*.txt|All files|*.*";
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -188,6 +193,7 @@
     private System.Windows.Forms.ColumnHeader hostKeyFingerprintHeader;
     private System.Windows.Forms.ToolStripMenuItem exportToFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem exportToClipboardToolStripMenuItem;
+    private System.Windows.Forms.SaveFileDialog saveFileDialog1;
   }
 }
 
