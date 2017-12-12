@@ -107,12 +107,27 @@ namespace WindowsFormsApplication2
 
     private void exportToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+      Clipboard.SetDataObject((object)exportToString());
     }
 
-    private void exportToString()
+    private string exportToString()
     {
+      var sb = new StringBuilder();
+      sb.Append("Windows Registry Editor Version 5.00\r\n\r\n[HKEY_CURRENT_USER\\Software\\SimonTatham\\PuTTY\\SshHostKeys]\r\n");
+      foreach (var knownHost in knownHosts)
+      {
+        sb.AppendFormat("\"{0}\"=\"{1}\"\r\n"
+        , knownHost.windowsRegistryName
+        , knownHost.windowsRegistryValue
+        );
+      }
+      sb.Append("\r\n");
+      return sb.ToString();
+    }
 
+    private void exportToFileToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      
     }
   }
 
@@ -143,8 +158,8 @@ namespace WindowsFormsApplication2
     string host;
     int port;
     /* Hold onto our source data; useful if we fail to grok it */
-    string windowsRegistryName;
-    string windowsRegistryValue;
+    public string windowsRegistryName;
+    public string windowsRegistryValue;
     bool parseError;
     /* Maintain a writable handle to the registry */
     const string REG_KEY = "Software\\SimonTatham\\PuTTY\\SshHostKeys";
