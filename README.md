@@ -7,9 +7,10 @@ key verifications stored in the Windows Registry by the venerable PuTTY SSH
 [1] client by Simon Tatham.
 
 You can also un-hash hostnames interactively by typing a matching host into the
-search box. This can be useful as an intermediate step in importing to PuTTY
-because PuTTY's known hosts records don't appear to support hashing (or at
-least, it isn't the default option.)
+search box. This can be useful as an intermediate step in importing
+OpenSSH-format `known_hosts` entries into PuTTY because PuTTY's known hosts
+records don't appear to support hashing (or at least, it isn't the default
+option.)
 
 It has extremely limited support for keys (2048-bit RSA keys are the only
 ones that have been tested.)
