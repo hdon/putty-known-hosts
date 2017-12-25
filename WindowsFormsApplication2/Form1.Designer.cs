@@ -31,6 +31,7 @@
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.rescanRegistryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.readOpenSSHKnownhostsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,12 +39,17 @@
       this.onlineDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+      this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+      this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+      this.textBox1 = new System.Windows.Forms.TextBox();
       this.listView1 = new System.Windows.Forms.ListView();
       this.hostColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.hostKeyTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.hostKeyFingerprintHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-      this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+      this.label1 = new System.Windows.Forms.Label();
       this.menuStrip1.SuspendLayout();
+      this.tableLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -61,6 +67,7 @@
       // 
       this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rescanRegistryToolStripMenuItem,
+            this.readOpenSSHKnownhostsFileToolStripMenuItem,
             this.exportToFileToolStripMenuItem,
             this.exportToClipboardToolStripMenuItem,
             this.exitToolStripMenuItem});
@@ -71,28 +78,35 @@
       // rescanRegistryToolStripMenuItem
       // 
       this.rescanRegistryToolStripMenuItem.Name = "rescanRegistryToolStripMenuItem";
-      this.rescanRegistryToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+      this.rescanRegistryToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
       this.rescanRegistryToolStripMenuItem.Text = "&Re-scan Registry";
       this.rescanRegistryToolStripMenuItem.Click += new System.EventHandler(this.rescanRegistryToolStripMenuItem_Click);
+      // 
+      // readOpenSSHKnownhostsFileToolStripMenuItem
+      // 
+      this.readOpenSSHKnownhostsFileToolStripMenuItem.Name = "readOpenSSHKnownhostsFileToolStripMenuItem";
+      this.readOpenSSHKnownhostsFileToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+      this.readOpenSSHKnownhostsFileToolStripMenuItem.Text = "Read &OpenSSH known_hosts File";
+      this.readOpenSSHKnownhostsFileToolStripMenuItem.Click += new System.EventHandler(this.readOpenSSHKnownhostsFileToolStripMenuItem_Click);
       // 
       // exportToFileToolStripMenuItem
       // 
       this.exportToFileToolStripMenuItem.Name = "exportToFileToolStripMenuItem";
-      this.exportToFileToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+      this.exportToFileToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
       this.exportToFileToolStripMenuItem.Text = "E&xport to File";
       this.exportToFileToolStripMenuItem.Click += new System.EventHandler(this.exportToFileToolStripMenuItem_Click);
       // 
       // exportToClipboardToolStripMenuItem
       // 
       this.exportToClipboardToolStripMenuItem.Name = "exportToClipboardToolStripMenuItem";
-      this.exportToClipboardToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+      this.exportToClipboardToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
       this.exportToClipboardToolStripMenuItem.Text = "Export to &Clipboard";
       this.exportToClipboardToolStripMenuItem.Click += new System.EventHandler(this.exportToClipboardToolStripMenuItem_Click);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
       this.exitToolStripMenuItem.Text = "E&xit";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
       // 
@@ -124,21 +138,55 @@
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.aboutToolStripMenuItem.Text = "&About";
       // 
+      // saveFileDialog1
+      // 
+      this.saveFileDialog1.Filter = "Windows Registry Files|*.reg|Text files|*.txt|All files|*.*";
+      // 
+      // openFileDialog1
+      // 
+      this.openFileDialog1.FileName = "openFileDialog1";
+      // 
+      // tableLayoutPanel1
+      // 
+      this.tableLayoutPanel1.ColumnCount = 2;
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+      this.tableLayoutPanel1.Controls.Add(this.textBox1, 1, 0);
+      this.tableLayoutPanel1.Controls.Add(this.listView1, 0, 1);
+      this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+      this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
+      this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+      this.tableLayoutPanel1.RowCount = 2;
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(830, 422);
+      this.tableLayoutPanel1.TabIndex = 1;
+      // 
+      // textBox1
+      // 
+      this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.textBox1.Location = new System.Drawing.Point(82, 3);
+      this.textBox1.Name = "textBox1";
+      this.textBox1.Size = new System.Drawing.Size(824, 20);
+      this.textBox1.TabIndex = 6;
+      this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+      // 
       // listView1
       // 
       this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.hostColumnHeader,
             this.hostKeyTypeHeader,
             this.hostKeyFingerprintHeader});
+      this.tableLayoutPanel1.SetColumnSpan(this.listView1, 2);
       this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.listView1.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.listView1.Location = new System.Drawing.Point(0, 24);
+      this.listView1.Location = new System.Drawing.Point(3, 23);
       this.listView1.Name = "listView1";
-      this.listView1.Size = new System.Drawing.Size(830, 422);
-      this.listView1.TabIndex = 1;
+      this.listView1.Size = new System.Drawing.Size(903, 396);
+      this.listView1.TabIndex = 4;
       this.listView1.UseCompatibleStateImageBehavior = false;
       this.listView1.View = System.Windows.Forms.View.Details;
-      this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick_1);
       this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyDown);
       // 
       // hostColumnHeader
@@ -156,22 +204,31 @@
       this.hostKeyFingerprintHeader.Text = "Key Fingerprint";
       this.hostKeyFingerprintHeader.Width = 648;
       // 
-      // saveFileDialog1
+      // label1
       // 
-      this.saveFileDialog1.Filter = "Windows Registry Files|*.reg|Text files|*.txt|All files|*.*";
+      this.label1.AutoSize = true;
+      this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label1.Location = new System.Drawing.Point(3, 0);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(73, 20);
+      this.label1.TabIndex = 5;
+      this.label1.Text = "Search/Solve";
+      this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(830, 446);
-      this.Controls.Add(this.listView1);
+      this.Controls.Add(this.tableLayoutPanel1);
       this.Controls.Add(this.menuStrip1);
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "Form1";
       this.Text = "Putty Known Hosts";
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
+      this.tableLayoutPanel1.ResumeLayout(false);
+      this.tableLayoutPanel1.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -187,13 +244,18 @@
     private System.Windows.Forms.ToolStripMenuItem onlineDocumentationToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem exportToFileToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem exportToClipboardToolStripMenuItem;
+    private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+    private System.Windows.Forms.ToolStripMenuItem readOpenSSHKnownhostsFileToolStripMenuItem;
+    private System.Windows.Forms.OpenFileDialog openFileDialog1;
+    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     private System.Windows.Forms.ListView listView1;
     private System.Windows.Forms.ColumnHeader hostColumnHeader;
     private System.Windows.Forms.ColumnHeader hostKeyTypeHeader;
     private System.Windows.Forms.ColumnHeader hostKeyFingerprintHeader;
-    private System.Windows.Forms.ToolStripMenuItem exportToFileToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem exportToClipboardToolStripMenuItem;
-    private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.Label label1;
   }
 }
 

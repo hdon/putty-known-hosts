@@ -24,7 +24,7 @@ namespace WindowsFormsApplication2
       regKeyNameRegex = new Regex(@"^([^@]+)@(\d+):(.*)$");
       hexStringRegex = new Regex(@"^0x([0-9a-f]+)$");
       knownHosts = new List<KnownHost>();
-      this.rescan();
+      //this.rescan();
     }
 
     private void rescanRegistryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -58,6 +58,17 @@ namespace WindowsFormsApplication2
       }
     }
 
+    private void readOpenSshKnownHostsFile(string filename)
+    {
+      var file = new StreamReader(filename);
+      string line;
+      while ((line = file.ReadLine()) != null)
+      {
+        var knownHost = KnownHost.fromOpenSshKnownHosts(line);
+        knownHosts.Add(knownHost);
+        listView1.Items.Add(knownHost.listViewItem);
+      }
+    }
 
     // https://msdn.microsoft.com/en-us/library/ms996467.aspx
     private void listView1_ColumnClick_1(object sender, ColumnClickEventArgs e)
@@ -122,6 +133,30 @@ namespace WindowsFormsApplication2
     {
       if (saveFileDialog1.ShowDialog() == DialogResult.OK)
         File.WriteAllText(saveFileDialog1.FileName, exportToString());
+    }
+
+    private void readOpenSSHKnownhostsFileToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      if (openFileDialog1.ShowDialog() == DialogResult.OK)
+        readOpenSshKnownHostsFile(openFileDialog1.FileName);
+    }
+
+    private void textBox1_TextChanged(object sender, EventArgs e)
+    {
+      // TODO search; solve hashes
+
+      /* Try to solve hashes */
+      foreach (var knownHost in knownHosts)
+      {
+        if (knownHost.trySolvingHashedHost(textBox1.Text))
+        {
+          knownHost.listViewItem.BackColor = System.Drawing.Color.Yellow;
+        }
+        else
+        {
+          knownHost.listViewItem.BackColor = System.Drawing.SystemColors.Window;
+        }
+      }
     }
   }
 

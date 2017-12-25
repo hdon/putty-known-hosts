@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BinaryWriter = System.IO.BinaryWriter;
 using Encoding = System.Text.Encoding;
 using ListViewItem = System.Windows.Forms.ListViewItem;
@@ -8,11 +9,17 @@ using Regex = System.Text.RegularExpressions.Regex;
 using Registry = Microsoft.Win32.Registry;
 using RegistryKey = Microsoft.Win32.RegistryKey;
 using StringBuilder = System.Text.StringBuilder;
+using HMACSHA1 = System.Security.Cryptography.HMACSHA1;
 
 class KnownHost
 {
   string keyType;
   string host;
+  byte[] hostHashSalt;
+  byte[] hostHash;
+  string opensshLine;
+  string opensshBase64KeyStr;
+
   int port;
   /* Hold onto our source data; useful if we fail to grok it */
   public string windowsRegistryName;
@@ -40,7 +47,10 @@ class KnownHost
     {
       if (_listViewItem == null)
       {
-        _listViewItem = new ListViewItem(this.host + ":" + this.port);
+        if (this.host != null)
+          _listViewItem = new ListViewItem(this.host + ":" + this.port);
+        else
+          _listViewItem = new ListViewItem("<unknown host>");
         _listViewItem.SubItems.Add(this.keyType);
         _listViewItem.SubItems.Add(this.keyHash);
         _listViewItem.Tag = this;
@@ -49,31 +59,69 @@ class KnownHost
     }
   }
 
+  /* Where did this known host come from? e.g. registry, file */
+  public const string FROM_REGISTRY = "registry";
+  private string _source;
+  public string source
+  {
+    private set { _source = value; }
+    get { return _source; }
+  }
+
   private string _keyHash;
   public string keyHash
   {
     private set { _keyHash = value; }
     get
     {
-      if (_keyHash == null && this.windowsRegistryValue != null)
+      if (_keyHash == null)
       {
-        using (MD5 md5Hash = MD5.Create())
+        if (this.windowsRegistryValue != null)
         {
-          var decodedParts = DecodePuttyRegPubKey(windowsRegistryValue);
-          var exponent = decodedParts.Item1;
-          var modulus = decodedParts.Item2;
-          var pubKeyFormatted = formatPublicKeyParts("ssh-rsa", exponent, modulus);
-          _keyHash = GetMd5Hash(md5Hash, pubKeyFormatted);
+          using (MD5 md5Hash = MD5.Create())
+          {
+            var decodedParts = DecodePuttyRegPubKey(windowsRegistryValue);
+            var exponent = decodedParts.Item1;
+            var modulus = decodedParts.Item2;
+            // NOTE pubKeyFormatted is analogous to opensshBase64KeyStr
+            var pubKeyFormatted = formatPublicKeyParts("ssh-rsa", exponent, modulus);
+            _keyHash = GetMd5Hash(md5Hash, pubKeyFormatted);
+          }
+        }
+        else if (opensshBase64KeyStr != null)
+        {
+          using (MD5 md5Hash = MD5.Create())
+          {
+            var pubKeyFormatted = Convert.FromBase64String(opensshBase64KeyStr);
+            _keyHash = GetMd5Hash(md5Hash, pubKeyFormatted);
+          }
         }
       }
       return _keyHash;
     }
   }
 
+  public bool trySolvingHashedHost(string host)
+  {
+    if (this.host != null)
+      return this.host.Equals(host);
+    using (var hmac = new HMACSHA1(hostHashSalt))
+    {
+      if (hmac.ComputeHash(Encoding.ASCII.GetBytes(host)).SequenceEqual(hostHash))
+      {
+        this.host = host;
+        this.listViewItem.SubItems[0].Text = host;
+        return true;
+      }
+    }
+    return false;
+  }
+
   private KnownHost() { }
   public static KnownHost fromReg(String name)
   {
     var rval = new KnownHost();
+    rval.source = FROM_REGISTRY;
     var match = regKeyNameRegex.Match(name);
     if (!match.Success)
     {
@@ -88,6 +136,7 @@ class KnownHost
     rval.windowsRegistryValue = (String)rkeySshHostKeys.GetValue(name);
     return rval;
   }
+  /* TODO remove? */
   public static KnownHost fromParts(String host, int port, String keyType, string keyData)
   {
     var rval = new KnownHost();
@@ -95,6 +144,65 @@ class KnownHost
     rval.port = port;
     rval.keyType = keyType;
     rval.windowsRegistryValue = keyData;
+    return rval;
+  }
+  public static KnownHost fromOpenSshKnownHosts(string line)
+  {
+    /* for details on openssh known_hosts format, see:
+     * http://man.openbsd.org/sshd.8#SSH_KNOWN_HOSTS_FILE_FORMAT
+     */
+    var rval = new KnownHost();
+    rval.opensshLine = line;
+    var pieces = line.Split(' ').Where(s => s.Length > 0).ToArray();
+    string marker = null, hostnames, comment = null;
+    switch (pieces.Length)
+    {
+      case 3:
+        hostnames = pieces[0];
+        rval.keyType = pieces[1];
+        rval.opensshBase64KeyStr = pieces[2];
+        break;
+      case 4:
+        if (pieces[0][0] == '@')
+        {
+          marker = pieces[0];
+          hostnames = pieces[1];
+          rval.keyType = pieces[2];
+          rval.opensshBase64KeyStr = pieces[3];
+        }
+        else
+        {
+          hostnames = pieces[0];
+          rval.keyType = pieces[1];
+          rval.opensshBase64KeyStr = pieces[2];
+          comment = pieces[3];
+        }
+        break;
+      case 5:
+        marker = pieces[0];
+        hostnames = pieces[1];
+        rval.keyType = pieces[2];
+        rval.opensshBase64KeyStr = pieces[3];
+        comment = pieces[4];
+        break;
+      default:
+        throw new Exception("invalid openssh-format known_hosts line: wrong number of space-separated fields");
+    }
+    if (marker != null && marker[0] != '@')
+      throw new Exception("invalid openssh-format known_hosts line: markers must begin with '@'");
+    
+    /* "hostnames" is probably hashed */
+    if (hostnames[0] == '|')
+    {
+      var hostHashPieces = hostnames.Split('|');
+      if (hostHashPieces.Length != 4)
+        throw new Exception(@"found ""|"" but not the right number");
+      rval.hostHashSalt = Convert.FromBase64String(hostHashPieces[2]);
+      rval.hostHash = Convert.FromBase64String(hostHashPieces[3]);
+    }
+    else
+      rval.host = hostnames;
+    
     return rval;
   }
 
