@@ -38,6 +38,12 @@ class KnownHost
     rkeySshHostKeys = Registry.CurrentUser.OpenSubKey(REG_KEY, true);
   }
 
+  /* Returns true if this instance represents an OpenSSH-format known_hosts record with a hashed hostname */
+  public bool hostIsUnknown()
+  {
+    return host == null;
+  }
+
   /* TODO Is this pattern a good idea? Lazily-evaluated properties that instantiate and assign the first time you access them? */
   private ListViewItem _listViewItem;
   public ListViewItem listViewItem

@@ -48,8 +48,12 @@
       this.hostKeyTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.hostKeyFingerprintHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.label1 = new System.Windows.Forms.Label();
+      this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+      this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+      this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
       this.menuStrip1.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
+      this.statusStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -154,12 +158,14 @@
       this.tableLayoutPanel1.Controls.Add(this.textBox1, 1, 0);
       this.tableLayoutPanel1.Controls.Add(this.listView1, 0, 1);
       this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+      this.tableLayoutPanel1.Controls.Add(this.statusStrip1, 0, 2);
       this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-      this.tableLayoutPanel1.RowCount = 2;
+      this.tableLayoutPanel1.RowCount = 3;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
       this.tableLayoutPanel1.Size = new System.Drawing.Size(830, 422);
       this.tableLayoutPanel1.TabIndex = 1;
       // 
@@ -183,7 +189,7 @@
       this.listView1.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.listView1.Location = new System.Drawing.Point(3, 23);
       this.listView1.Name = "listView1";
-      this.listView1.Size = new System.Drawing.Size(903, 396);
+      this.listView1.Size = new System.Drawing.Size(903, 376);
       this.listView1.TabIndex = 4;
       this.listView1.UseCompatibleStateImageBehavior = false;
       this.listView1.View = System.Windows.Forms.View.Details;
@@ -215,6 +221,30 @@
       this.label1.Text = "Search/Solve";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
+      // statusStrip1
+      // 
+      this.tableLayoutPanel1.SetColumnSpan(this.statusStrip1, 2);
+      this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2});
+      this.statusStrip1.Location = new System.Drawing.Point(0, 402);
+      this.statusStrip1.Name = "statusStrip1";
+      this.statusStrip1.Size = new System.Drawing.Size(909, 20);
+      this.statusStrip1.TabIndex = 7;
+      this.statusStrip1.Text = "statusStrip1";
+      // 
+      // toolStripStatusLabel1
+      // 
+      this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+      this.toolStripStatusLabel1.Size = new System.Drawing.Size(115, 15);
+      this.toolStripStatusLabel1.Text = "PuTTY Known Hosts";
+      // 
+      // toolStripStatusLabel2
+      // 
+      this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+      this.toolStripStatusLabel2.Size = new System.Drawing.Size(93, 15);
+      this.toolStripStatusLabel2.Text = "No known hosts";
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -229,6 +259,8 @@
       this.menuStrip1.PerformLayout();
       this.tableLayoutPanel1.ResumeLayout(false);
       this.tableLayoutPanel1.PerformLayout();
+      this.statusStrip1.ResumeLayout(false);
+      this.statusStrip1.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -256,6 +288,9 @@
     private System.Windows.Forms.ColumnHeader hostKeyFingerprintHeader;
     private System.Windows.Forms.TextBox textBox1;
     private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.StatusStrip statusStrip1;
+    private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+    private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
   }
 }
 

@@ -56,6 +56,22 @@ namespace WindowsFormsApplication2
         knownHosts.Add(knownHost);
         listView1.Items.Add(knownHost.listViewItem);
       }
+
+      updateKnownHostStats();
+    }
+
+    private void updateKnownHostStats()
+    {
+      int numTotal = 0, numUnknownHosts = 0;
+      var sb = new StringBuilder();
+      foreach (var knownHost in knownHosts)
+      {
+        numTotal++;
+        if (knownHost.hostIsUnknown())
+          numUnknownHosts++;
+      }
+      sb.AppendFormat("Known Hosts: {0} Unknown Hosts: {1}", numTotal, numUnknownHosts);
+      toolStripStatusLabel2.Text = sb.ToString();
     }
 
     private void readOpenSshKnownHostsFile(string filename)
@@ -68,6 +84,7 @@ namespace WindowsFormsApplication2
         knownHosts.Add(knownHost);
         listView1.Items.Add(knownHost.listViewItem);
       }
+      updateKnownHostStats();
     }
 
     // https://msdn.microsoft.com/en-us/library/ms996467.aspx
@@ -77,6 +94,7 @@ namespace WindowsFormsApplication2
       this.listView1.Sort();
     }
 
+    /* TODO what if this item isn't from the registry? */
     private void listView1_KeyDown(object sender, KeyEventArgs ev)
     {
       if (Keys.Delete == ev.KeyCode)
@@ -91,6 +109,7 @@ namespace WindowsFormsApplication2
           rescan();
         }
       }
+      updateKnownHostStats();
     }
 
     private void deletedSelectedItems()
@@ -151,12 +170,17 @@ namespace WindowsFormsApplication2
         if (knownHost.trySolvingHashedHost(textBox1.Text))
         {
           knownHost.listViewItem.BackColor = System.Drawing.Color.Yellow;
+          var s = new StringBuilder();
+          s.Append("Found ");
+          s.Append(textBox1.Text);
+          toolStripStatusLabel1.Text = s.ToString();
         }
         else
         {
           knownHost.listViewItem.BackColor = System.Drawing.SystemColors.Window;
         }
       }
+      updateKnownHostStats();
     }
   }
 
