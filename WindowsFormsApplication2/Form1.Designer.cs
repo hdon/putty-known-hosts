@@ -32,6 +32,7 @@
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.rescanRegistryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.readOpenSSHKnownhostsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.identifyHostsFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +52,9 @@
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
       this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+      this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
+      this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.iP4RangeAttackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
@@ -60,6 +64,7 @@
       // 
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.helpToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
@@ -72,6 +77,7 @@
       this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rescanRegistryToolStripMenuItem,
             this.readOpenSSHKnownhostsFileToolStripMenuItem,
+            this.identifyHostsFromFileToolStripMenuItem,
             this.exportToFileToolStripMenuItem,
             this.exportToClipboardToolStripMenuItem,
             this.exitToolStripMenuItem});
@@ -92,6 +98,15 @@
       this.readOpenSSHKnownhostsFileToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
       this.readOpenSSHKnownhostsFileToolStripMenuItem.Text = "Read &OpenSSH known_hosts File";
       this.readOpenSSHKnownhostsFileToolStripMenuItem.Click += new System.EventHandler(this.readOpenSSHKnownhostsFileToolStripMenuItem_Click);
+      // 
+      // identifyHostsFromFileToolStripMenuItem
+      // 
+      this.identifyHostsFromFileToolStripMenuItem.Name = "identifyHostsFromFileToolStripMenuItem";
+      this.identifyHostsFromFileToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+      this.identifyHostsFromFileToolStripMenuItem.Text = "&Identify Hosts From File";
+      this.identifyHostsFromFileToolStripMenuItem.ToolTipText = "Read in a file (e.g. ~/.bash_history, ~/.ssh/config) containing hostnames to use " +
+    "in a dictionary attack to unhash hostnames";
+      this.identifyHostsFromFileToolStripMenuItem.Click += new System.EventHandler(this.identifyHostsFromFileToolStripMenuItem_Click);
       // 
       // exportToFileToolStripMenuItem
       // 
@@ -245,6 +260,26 @@
       this.toolStripStatusLabel2.Size = new System.Drawing.Size(93, 15);
       this.toolStripStatusLabel2.Text = "No known hosts";
       // 
+      // openFileDialog2
+      // 
+      this.openFileDialog2.FileName = "openFileDialog2";
+      this.openFileDialog2.Filter = "All Files|*.*";
+      // 
+      // editToolStripMenuItem
+      // 
+      this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.iP4RangeAttackToolStripMenuItem});
+      this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+      this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+      this.editToolStripMenuItem.Text = "&Edit";
+      // 
+      // iP4RangeAttackToolStripMenuItem
+      // 
+      this.iP4RangeAttackToolStripMenuItem.Name = "iP4RangeAttackToolStripMenuItem";
+      this.iP4RangeAttackToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+      this.iP4RangeAttackToolStripMenuItem.Text = "IP&4 Range Attack";
+      this.iP4RangeAttackToolStripMenuItem.ToolTipText = "Specify a range of IPv4 addresses to try against hashed hosts";
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -291,6 +326,10 @@
     private System.Windows.Forms.StatusStrip statusStrip1;
     private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+    private System.Windows.Forms.ToolStripMenuItem identifyHostsFromFileToolStripMenuItem;
+    private System.Windows.Forms.OpenFileDialog openFileDialog2;
+    private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem iP4RangeAttackToolStripMenuItem;
   }
 }
 

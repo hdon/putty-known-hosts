@@ -15,14 +15,17 @@ namespace WindowsFormsApplication2
     /* TODO static? */
     readonly Regex regKeyNameRegex;
     readonly Regex hexStringRegex;
+    readonly Regex hostNameRegex;
 
     const string REG_KEY = "Software\\SimonTatham\\PuTTY\\SshHostKeys";
-
+    
     public Form1()
     {
       InitializeComponent();
       regKeyNameRegex = new Regex(@"^([^@]+)@(\d+):(.*)$");
       hexStringRegex = new Regex(@"^0x([0-9a-f]+)$");
+      // recognize hostnames and IPv4 dotted-decimal notation
+      hostNameRegex = new Regex(@"\b([A-Za-z][A-Za-z0-9.-]+)|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\b");
       knownHosts = new List<KnownHost>();
       //this.rescan();
     }
@@ -178,6 +181,34 @@ namespace WindowsFormsApplication2
         else
         {
           knownHost.listViewItem.BackColor = System.Drawing.SystemColors.Window;
+        }
+      }
+      updateKnownHostStats();
+    }
+
+    private void identifyHostsFromFileToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      if (openFileDialog2.ShowDialog() == DialogResult.OK)
+        identifyHostsFromFile(openFileDialog2.FileName);
+    }
+
+    /* Read plausible hostnames from a file and perform dictionary attack against loaded known_hosts records */
+    private void identifyHostsFromFile(string filename)
+    {
+      var file = new StreamReader(filename);
+      string line;
+      var attemptedHosts = new HashSet<string>();
+      while ((line = file.ReadLine()) != null)
+      {
+        foreach (var match in hostNameRegex.Matches(line))
+        {
+          var host = match.ToString();
+          if (!attemptedHosts.Contains(host))
+          {
+            foreach (var knownHost in knownHosts)
+              knownHost.trySolvingHashedHost(host);
+            attemptedHosts.Add(host);
+          }
         }
       }
       updateKnownHostStats();
