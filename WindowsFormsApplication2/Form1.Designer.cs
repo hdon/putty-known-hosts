@@ -36,6 +36,8 @@
       this.exportToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exportToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.iP4RangeAttackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.onlineDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,8 +55,6 @@
       this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
       this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
-      this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.iP4RangeAttackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
@@ -128,6 +128,21 @@
       this.exitToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
       this.exitToolStripMenuItem.Text = "E&xit";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+      // 
+      // editToolStripMenuItem
+      // 
+      this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.iP4RangeAttackToolStripMenuItem});
+      this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+      this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+      this.editToolStripMenuItem.Text = "&Edit";
+      // 
+      // iP4RangeAttackToolStripMenuItem
+      // 
+      this.iP4RangeAttackToolStripMenuItem.Name = "iP4RangeAttackToolStripMenuItem";
+      this.iP4RangeAttackToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+      this.iP4RangeAttackToolStripMenuItem.Text = "IP&4 Range Attack";
+      this.iP4RangeAttackToolStripMenuItem.ToolTipText = "Specify a range of IPv4 addresses to try against hashed hosts";
       // 
       // helpToolStripMenuItem
       // 
@@ -264,21 +279,6 @@
       // 
       this.openFileDialog2.FileName = "openFileDialog2";
       this.openFileDialog2.Filter = "All Files|*.*";
-      // 
-      // editToolStripMenuItem
-      // 
-      this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.iP4RangeAttackToolStripMenuItem});
-      this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-      this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-      this.editToolStripMenuItem.Text = "&Edit";
-      // 
-      // iP4RangeAttackToolStripMenuItem
-      // 
-      this.iP4RangeAttackToolStripMenuItem.Name = "iP4RangeAttackToolStripMenuItem";
-      this.iP4RangeAttackToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-      this.iP4RangeAttackToolStripMenuItem.Text = "IP&4 Range Attack";
-      this.iP4RangeAttackToolStripMenuItem.ToolTipText = "Specify a range of IPv4 addresses to try against hashed hosts";
       // 
       // Form1
       // 

@@ -81,11 +81,31 @@ namespace WindowsFormsApplication2
     {
       var file = new StreamReader(filename);
       string line;
+      int lineNumber = 0;
+      bool ignoreErrors = false;
       while ((line = file.ReadLine()) != null)
       {
-        var knownHost = KnownHost.fromOpenSshKnownHosts(line);
-        knownHosts.Add(knownHost);
-        listView1.Items.Add(knownHost.listViewItem);
+        lineNumber++;
+        try
+        {
+          var knownHost = KnownHost.fromOpenSshKnownHosts(line);
+          knownHosts.Add(knownHost);
+          listView1.Items.Add(knownHost.listViewItem);
+          // TODO clean up in case of exception!
+        }
+        catch (Exception e)
+        {
+          if (ignoreErrors)
+            continue;
+          //var msg = new StringBuilder();
+          //msg.AppendFormat("An error was encountered processing line {0}: {1}");
+          var dialog = new Form2(e.ToString(), lineNumber, line);
+          dialog.StartPosition = FormStartPosition.CenterParent;
+          var keepGoing = dialog.ShowDialog() == DialogResult.Yes;
+          ignoreErrors = dialog.ignoreFutureErrors;
+          if (!keepGoing)
+            break;
+        }
       }
       updateKnownHostStats();
     }
