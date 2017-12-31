@@ -233,6 +233,32 @@ namespace WindowsFormsApplication2
       }
       updateKnownHostStats();
     }
+
+    private void importIntoRegistryToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      bool someNotImported = false;
+
+      foreach (var knownHost in knownHosts)
+      {
+        if (knownHost.windowsRegistryName == null)
+        {
+          if (knownHost.hostIsUnknown())
+          {
+            knownHost.listViewItem.BackColor = System.Drawing.Color.MistyRose;
+            someNotImported = true;
+          }
+          else
+          {
+            // TODO add to registry
+            knownHost.addToRegistry();
+            knownHost.listViewItem.BackColor = System.Drawing.Color.PaleGreen;
+          }
+        }
+      }
+
+      if (someNotImported)
+        MessageBox.Show("Warning: Some hosts could not be imported into the registry due to hashed hostnames.");
+    }
   }
 
   // https://msdn.microsoft.com/en-us/library/ms996467.aspx

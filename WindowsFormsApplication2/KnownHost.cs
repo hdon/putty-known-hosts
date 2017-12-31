@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Linq;
+using BinaryReader = System.IO.BinaryReader;
 using BinaryWriter = System.IO.BinaryWriter;
 using Encoding = System.Text.Encoding;
+using HMACSHA1 = System.Security.Cryptography.HMACSHA1;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using MD5 = System.Security.Cryptography.MD5;
 using MemoryStream = System.IO.MemoryStream;
 using Regex = System.Text.RegularExpressions.Regex;
 using Registry = Microsoft.Win32.Registry;
 using RegistryKey = Microsoft.Win32.RegistryKey;
+using SeekOrigin = System.IO.SeekOrigin;
 using StringBuilder = System.Text.StringBuilder;
-using HMACSHA1 = System.Security.Cryptography.HMACSHA1;
 
 class KnownHost
 {
   string keyType;
+  public byte[] exponentBytes { get; private set; }
+  public byte[] modulusBytes { get; private set; }
   string host;
   byte[] hostHashSalt;
   byte[] hostHash;
   string opensshLine;
-  string opensshBase64KeyStr;
 
   int port;
   /* Hold onto our source data; useful if we fail to grok it */
@@ -74,38 +77,7 @@ class KnownHost
     get { return _source; }
   }
 
-  private string _keyHash;
-  public string keyHash
-  {
-    private set { _keyHash = value; }
-    get
-    {
-      if (_keyHash == null)
-      {
-        if (this.windowsRegistryValue != null)
-        {
-          using (MD5 md5Hash = MD5.Create())
-          {
-            var decodedParts = DecodePuttyRegPubKey(windowsRegistryValue);
-            var exponent = decodedParts.Item1;
-            var modulus = decodedParts.Item2;
-            // NOTE pubKeyFormatted is analogous to opensshBase64KeyStr
-            var pubKeyFormatted = formatPublicKeyParts("ssh-rsa", exponent, modulus);
-            _keyHash = GetMd5Hash(md5Hash, pubKeyFormatted);
-          }
-        }
-        else if (opensshBase64KeyStr != null)
-        {
-          using (MD5 md5Hash = MD5.Create())
-          {
-            var pubKeyFormatted = Convert.FromBase64String(opensshBase64KeyStr);
-            _keyHash = GetMd5Hash(md5Hash, pubKeyFormatted);
-          }
-        }
-      }
-      return _keyHash;
-    }
-  }
+  public string keyHash { get; private set; }
 
   public bool trySolvingHashedHost(string host)
   {
@@ -140,6 +112,18 @@ class KnownHost
 
     rval.windowsRegistryName = name;
     rval.windowsRegistryValue = (String)rkeySshHostKeys.GetValue(name);
+
+    var decodedParts = DecodePuttyRegPubKey(rval.windowsRegistryValue);
+    rval.exponentBytes = decodedParts.Item1;
+    rval.modulusBytes = decodedParts.Item2;
+
+    // NOTE pubKeyFormatted is analogous to opensshBase64KeyStr
+    var pubKeyFormatted = makeKeyFingerprint("ssh-rsa", rval.exponentBytes, rval.modulusBytes);
+    using (MD5 md5Hash = MD5.Create())
+    {
+      rval.keyHash = GetMd5Hash(md5Hash, pubKeyFormatted);
+    }
+
     return rval;
   }
   /* TODO remove? */
@@ -161,12 +145,13 @@ class KnownHost
     rval.opensshLine = line;
     var pieces = line.Split(' ').Where(s => s.Length > 0).ToArray();
     string marker = null, hostnames, comment = null;
+    string b64KeyFingerprint;
     switch (pieces.Length)
     {
       case 3:
         hostnames = pieces[0];
         rval.keyType = pieces[1];
-        rval.opensshBase64KeyStr = pieces[2];
+        b64KeyFingerprint = pieces[2];
         break;
       case 4:
         if (pieces[0][0] == '@')
@@ -174,13 +159,13 @@ class KnownHost
           marker = pieces[0];
           hostnames = pieces[1];
           rval.keyType = pieces[2];
-          rval.opensshBase64KeyStr = pieces[3];
+          b64KeyFingerprint = pieces[3];
         }
         else
         {
           hostnames = pieces[0];
           rval.keyType = pieces[1];
-          rval.opensshBase64KeyStr = pieces[2];
+          b64KeyFingerprint = pieces[2];
           comment = pieces[3];
         }
         break;
@@ -188,7 +173,7 @@ class KnownHost
         marker = pieces[0];
         hostnames = pieces[1];
         rval.keyType = pieces[2];
-        rval.opensshBase64KeyStr = pieces[3];
+        b64KeyFingerprint = pieces[3];
         comment = pieces[4];
         break;
       default:
@@ -209,6 +194,19 @@ class KnownHost
     else
       rval.host = hostnames;
     
+    /* Extract public key */
+    var decodedKeyParts = DecodeOpenSSHPubKey(b64KeyFingerprint);
+    rval.exponentBytes = decodedKeyParts.Item1;
+    rval.modulusBytes = decodedKeyParts.Item2;
+
+    /* Calculate checksum hash */
+    /* TODO this is a little more work than it has to be */
+    var pubKeyFormatted = makeKeyFingerprint("ssh-rsa", rval.exponentBytes, rval.modulusBytes);
+    using (MD5 md5Hash = MD5.Create())
+    {
+      rval.keyHash = GetMd5Hash(md5Hash, pubKeyFormatted);
+    }
+
     return rval;
   }
 
@@ -217,7 +215,7 @@ class KnownHost
     rkeySshHostKeys.DeleteValue(windowsRegistryName);
   }
 
-  Tuple<byte[], byte[]> DecodePuttyRegPubKey(string pubkey)
+  static Tuple<byte[], byte[]> DecodePuttyRegPubKey(string pubkey)
   {
     var regKeyParts = pubkey.Split(',');
     if (regKeyParts.Length != 2)
@@ -227,6 +225,25 @@ class KnownHost
     , hexToBytes(regKeyParts[1])
     );
   }
+
+  static Tuple<byte[], byte[]> DecodeOpenSSHPubKey(string b64pubkey)
+  {
+    var keyData = Convert.FromBase64String(b64pubkey);
+    using (MemoryStream memStream = new MemoryStream())
+    {
+      memStream.Write(keyData, 0, keyData.Length);
+      memStream.Seek(0, SeekOrigin.Begin);
+      var br = new BinaryReader(memStream);
+      var fieldLen = ReadInt32(br);
+      var keyType = br.ReadBytes(fieldLen);
+      fieldLen = ReadInt32(br);
+      var exponent = br.ReadBytes(fieldLen);
+      fieldLen = ReadInt32(br);
+      var modulus = br.ReadBytes(fieldLen);
+      return Tuple.Create(exponent, modulus);
+    }
+  }
+
 
   static byte[] hexToBytes(string hex)
   {
@@ -250,19 +267,19 @@ class KnownHost
     return decoded;
   }
 
-  static byte[] formatPublicKeyParts(string keyType, byte[] exponent, byte[] modulus)
+  static byte[] makeKeyFingerprint(string keyType, byte[] exponent, byte[] modulus)
   {
     using (MemoryStream memStream = new MemoryStream())
     {
       var bw = new BinaryWriter(memStream);
 
-      writeInt(bw, keyType.Length);
+      writeInt(bw, keyType.Length); 
       bw.Write(Encoding.ASCII.GetBytes(keyType));
       writeInt(bw, exponent.Length);
       bw.Write(exponent);
       // XXX TODO is this correct? i've observed this byte from public key files recorded by openssh's ssh-keygen. no idea what it's for.
-      writeInt(bw, modulus.Length + 1);
-      bw.Write((byte)0);
+      writeInt(bw, modulus.Length);// + 1);
+      //bw.Write((byte)0);
       bw.Write(modulus);
       return memStream.ToArray();
     }
@@ -273,6 +290,13 @@ class KnownHost
     byte[] tmp = BitConverter.GetBytes((int)i);
     Array.Reverse(tmp);
     w.Write(tmp);
+  }
+
+  static int ReadInt32(BinaryReader r)
+  {
+    var bytes = r.ReadBytes(4);
+    Array.Reverse(bytes);
+    return BitConverter.ToInt32(bytes, 0);
   }
 
   // thanks https://msdn.microsoft.com/en-us/library/system.security.cryptography.md5(v=vs.110).aspx
@@ -291,5 +315,14 @@ class KnownHost
       sBuilder.Append(data[i].ToString("x2"));
     }
     return sBuilder.ToString();
+  }
+
+  internal void addToRegistry()
+  {
+    if (source == FROM_REGISTRY)
+      return;
+    var rvName = new StringBuilder();
+    rvName.AppendFormat("rsa2@{0}:{1}", port, host);
+    //rkeySshHostKeys.SetValue()
   }
 }

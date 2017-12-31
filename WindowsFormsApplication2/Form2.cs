@@ -31,7 +31,7 @@ namespace WindowsFormsApplication2
     }
 
     /* TODO is this idiomatic of Windows Forms? Is there better way? */
-    public DialogResult ShowDialog()
+    public new DialogResult ShowDialog()
     {
       var result = base.ShowDialog();
       ignoreFutureErrors = ignoreFutureErrorsCheckBox.Checked;

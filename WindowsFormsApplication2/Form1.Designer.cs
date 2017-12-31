@@ -55,6 +55,7 @@
       this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
       this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
+      this.importIntoRegistryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
@@ -132,7 +133,8 @@
       // editToolStripMenuItem
       // 
       this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.iP4RangeAttackToolStripMenuItem});
+            this.iP4RangeAttackToolStripMenuItem,
+            this.importIntoRegistryToolStripMenuItem});
       this.editToolStripMenuItem.Name = "editToolStripMenuItem";
       this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
       this.editToolStripMenuItem.Text = "&Edit";
@@ -140,7 +142,7 @@
       // iP4RangeAttackToolStripMenuItem
       // 
       this.iP4RangeAttackToolStripMenuItem.Name = "iP4RangeAttackToolStripMenuItem";
-      this.iP4RangeAttackToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+      this.iP4RangeAttackToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
       this.iP4RangeAttackToolStripMenuItem.Text = "IP&4 Range Attack";
       this.iP4RangeAttackToolStripMenuItem.ToolTipText = "Specify a range of IPv4 addresses to try against hashed hosts";
       // 
@@ -281,6 +283,13 @@
       this.openFileDialog2.FileName = "openFileDialog2";
       this.openFileDialog2.Filter = "All Files|*.*";
       // 
+      // importIntoRegistryToolStripMenuItem
+      // 
+      this.importIntoRegistryToolStripMenuItem.Name = "importIntoRegistryToolStripMenuItem";
+      this.importIntoRegistryToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+      this.importIntoRegistryToolStripMenuItem.Text = "&Import into Registry";
+      this.importIntoRegistryToolStripMenuItem.Click += new System.EventHandler(this.importIntoRegistryToolStripMenuItem_Click);
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -331,6 +340,7 @@
     private System.Windows.Forms.OpenFileDialog openFileDialog2;
     private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem iP4RangeAttackToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem importIntoRegistryToolStripMenuItem;
   }
 }
 
