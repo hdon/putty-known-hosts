@@ -220,9 +220,17 @@ class KnownHost
     var regKeyParts = pubkey.Split(',');
     if (regKeyParts.Length != 2)
       throw new Exception("expected putty reg pubkey to contain one comma");
+    var modulus = hexToBytes(regKeyParts[1]);
+    /* NOTE putty doesn't pad the RSA key modulus with a NUL byte as OpenSSH and OpenSSL seem to do, so we'll do so here.
+     * TODO how do I add automatic word wrap column limit in VS?
+     * NOTE we could rewrite this to be more performant
+     */
+    var paddedModulus = new byte[modulus.Length+1];
+    paddedModulus[0] = (byte) 0;
+    Array.Copy(modulus, 0, paddedModulus, 1, modulus.Length);
     return Tuple.Create(
       hexToBytes(regKeyParts[0])
-    , hexToBytes(regKeyParts[1])
+    , paddedModulus
     );
   }
 
